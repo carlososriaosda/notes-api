@@ -1,4 +1,3 @@
-
 function createNote (req,res,next){
     const{title,content,userId}= req.body;
 

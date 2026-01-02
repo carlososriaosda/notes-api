@@ -1,4 +1,4 @@
-const prisma = require("../pris");
+const prisma = require("../prisma");
 
 async function getNote(req,res) {
 const {by,value}= req.query;

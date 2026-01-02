@@ -1,4 +1,4 @@
-const prisma = require("../pris");
+const prisma = require("../prisma");
 
 async function createUser(req, res) {
   const { name, email } = req.body;
