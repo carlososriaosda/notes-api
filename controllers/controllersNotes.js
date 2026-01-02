@@ -5,7 +5,7 @@ const {by,value}= req.query;
   
   if (Object.keys(req.query).length===0) {
       const notes = await prisma.note.findMany()
-      return res.json(notes)
+      return res.status(200).json(notes)
     }
 
 
@@ -15,13 +15,13 @@ let where ={}
     case"id":    
       const id = Number(value)
       if(!Number.isInteger(id)){
-       return res.json({message:"invalid id"})
+       return res.status(404).json({message:"invalid id"})
       }
       where= {id}
       break ;
     
     default:
-     return res.json({message:`"by" must be ID or title`})
+     return res.status(400).json({message:`"by" must be ID`})
       
      
   }
@@ -31,7 +31,7 @@ try{
       where
     })
     if(!note){
-      return res.json({message:"note not found"})
+      return res.status(404).json({message:"note not found"})
     }
     res.status(200).json(note)
   }
@@ -48,7 +48,7 @@ async function createNote(req, res) {
       data: { title, content, userId }
     })
 
-    res.status(201).json(newNote) // devuelve la nota creada
+    res.status(201).json(newNote) 
   } 
   catch (error) {
     next(error); 
@@ -101,7 +101,7 @@ async function deleteNote(req,res) {
     await prisma.note.delete({
       where:{id}
     })
-    res.status(200).json({message: "successfully deleted note"})
+    res.status(204);
   }
    catch (error) {
     next(error); 
