@@ -10,10 +10,10 @@ app.use((err, req, res, next) => {
   res.status(400).json({ message: "Invalid JSON body" })
 })
 
-const notesRouter = require("./routes/notesRoutes")
+const notesRouter = require("./routes/notes")
 app.use("/notes", notesRouter)
 
-const userRouter = require("./routes/usersRoutes");
+const userRouter = require("./routes/users");
 app.use("/users", userRouter);
 
 app.use((err, req, res, next) => {

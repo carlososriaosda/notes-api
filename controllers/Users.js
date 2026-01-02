@@ -1,6 +1,6 @@
 const prisma = require("../prisma");
 
-async function createUser(req, res) {
+async function createUser(req,res,next) {
   const { name, email } = req.body;
 
   if (!name || !email) {
@@ -16,26 +16,26 @@ async function createUser(req, res) {
 }
 }
 
-async function getUsers(req, res) {
-  try {
-    const { by, value } = req.query
+async function getUsers(req,res,next) {
+    const { by, value } = req.query;
 
+   try {
     if (Object.keys(req.query).length===0) {
       const users = await prisma.user.findMany()
-      return res.json(users)
+      return res.status(200).json(users)
     }
 
     if (!by || !value) {
       return res.status(400).json({ message: "by and value are required" })
     }
 
-    let where
+    let where;
 
     switch (by) {
       case "id": {
         const id = Number(value)
         if (!Number.isInteger(id)) {
-          return res.status(400).json({ message: "invalid id" })
+          return res.status(404).json({ message: "invalid id" })
         }
         where = { id }
         break
@@ -55,13 +55,13 @@ async function getUsers(req, res) {
       return res.status(404).json({ message: "user not found" })
     }
 
-    res.json(user)
+    res.status(200).json(user)
   }  catch (error) {
     next(error); 
 }
 }
 
-async function updateUser(req,res) {
+async function updateUser(req,res,next) {
   const id = Number(req.params.id);
 
   const {name,email}= req.body;  
@@ -95,7 +95,7 @@ async function updateUser(req,res) {
   
 }
 
-async function deleteUser(req,res) {
+async function deleteUser(req,res,next) {
   const id = Number(req.params.id);
 
   if(!Number.isInteger(id)){
@@ -121,7 +121,7 @@ async function deleteUser(req,res) {
 }
 }
 
-async function userNotesById(req,res) {
+async function userNotesById(req,res,next) {
   const id = Number(req.params.id)
 
   if(!Number.isInteger(id)){

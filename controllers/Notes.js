@@ -1,15 +1,19 @@
 const prisma = require("../prisma");
 
-async function getNote(req,res) {
-const {by,value}= req.query;
-  
+async function getNote(req,res,next) {
+  const {by,value}= req.query;
+
+ try{ 
   if (Object.keys(req.query).length===0) {
       const notes = await prisma.note.findMany()
       return res.status(200).json(notes)
     }
 
+  if (!by || !value) {
+      return res.status(400).json({ message: "by and value are required" })
+    }  
 
-let where ={}
+let where;
 
   switch(by){
     case"id":    
@@ -21,12 +25,8 @@ let where ={}
       break ;
     
     default:
-     return res.status(400).json({message:`"by" must be ID`})
-      
-     
-  }
-
-try{
+     return res.status(400).json({message:`"by" must be ID`})  
+    }
     const note = await prisma.note.findUnique({
       where
     })
@@ -40,7 +40,7 @@ try{
 }
 }  
 
-async function createNote(req, res) {
+async function createNote(req,res,next) {
   const { title, content, userId } = req.body;
 
   try {
@@ -55,7 +55,7 @@ async function createNote(req, res) {
 }
 }
 
-async function updateNote(req,res) {
+async function updateNote(req,res,next) {
   const id = Number(req.params.id);
 
   const {title,content,userId}= req.body;  
@@ -85,7 +85,7 @@ async function updateNote(req,res) {
   
 }
 
-async function deleteNote(req,res) {
+async function deleteNote(req,res,next) {
   const id = Number(req.params.id);
 
   if(!Number.isInteger(id)){
